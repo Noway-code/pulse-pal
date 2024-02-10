@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "expo-camera": "^14.0.4",
+    "expo-media-library": "^15.9.1"
+  }
+}
