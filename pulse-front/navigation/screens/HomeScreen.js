@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { View, Text, Image } from 'react-native';
-import { Button, Provider as PaperProvider, DefaultTheme, Card, Title, Paragraph } from 'react-native-paper';
+import {Button, Provider as PaperProvider, DefaultTheme, Card, Title, Paragraph, Divider} from 'react-native-paper';
+import CarouselCards from "../../assets/CarouselCards";
 
 const theme = {
 	...DefaultTheme,
@@ -26,10 +27,12 @@ export default function HomeScreen({ navigation }) {
 						<Paragraph>Card content</Paragraph>
 					</Card.Content>
 				</Card>
-				<Button icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')} color={theme.colors.primary}>
+				<Divider style={{ width: '90%', margin: 10 }} />
+				<CarouselCards />
+				<Button icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')} buttonColor={theme.colors.primary}>
 					Start Recording
 				</Button>
-				<Button icon="chart-bar" mode="outlined" onPress={() => navigation.navigate('Statistics')} color={theme.colors.primary} style={{ marginTop: 10 }}>
+				<Button icon="chart-bar" mode="outlined" onPress={() => navigation.navigate('Statistics')} buttonColor={theme.colors.primary} style={{ marginTop: 10 }}>
 					View Statistics
 				</Button>
 				<Text style={{ marginTop: 20, fontSize: 16, color: theme.colors.secondary }} >
