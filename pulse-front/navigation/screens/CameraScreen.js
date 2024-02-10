@@ -1,91 +1,83 @@
 import * as React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import {useState, useEffect, useRef} from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, Dimensions, Button, SafeAreaView } from 'react-native';
-import {Camera, CameraType} from 'expo-camera';
-import {Video} from 'expo-av';
+import { Camera } from 'expo-camera';
+import { Video } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function CameraScreen({ navigation }) {
 	const [hasCameraPermission, setHasCameraPermission] = useState(null);
-	const [image, setImage] = useState(null);
-	const [type, setType] = useState(Camera.Constants.Type.front);
-	const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
-	const [recording, setRecording] = useState(false);
 	const [video, setVideo] = useState(null);
+	const [recording, setRecording] = useState(false);
 	const cameraRef = useRef(null);
 
-    const initializeCamera = async () => {
-        const cameraStatus = await Camera.requestCameraPermissionsAsync();
-        setHasCameraPermission(cameraStatus.status === 'granted');
-    };
+	const initializeCamera = async () => {
+		const cameraStatus = await Camera.requestCameraPermissionsAsync();
+		setHasCameraPermission(cameraStatus.status === 'granted');
+	};
 
 	useEffect(() => {
-			MediaLibrary.requestPermissionsAsync();
-        initializeCamera();
+		MediaLibrary.requestPermissionsAsync();
+		initializeCamera();
 	}, []);
 
-    useFocusEffect(
-        React.useCallback(() => {
-            initializeCamera();
-            return () => {
-                if (recording) {
-                    stopRecording();
-                }
-            };
-        }, [])
-    );
+	useFocusEffect(
+		React.useCallback(() => {
+			initializeCamera();
+			return () => {
+				if (recording) {
+					stopRecording();
+				}
+			};
+		}, [])
+	);
 
-	const saveVideoToLocalDirectory = async (videoUri) => {
-		try {
-			// Get the file name
-			const fileUri = videoUri.split('/').pop();
-			const newFileUri = FileSystem.documentDirectory + fileUri;
-			alert(newFileUri);
-			// Copy the video to the app's document directory
-			await FileSystem.copyAsync({
-				from: videoUri,
-				to: newFileUri,
-			});
-
-			console.error('Video saved to document directory successfully!');
-
-			return newFileUri; // Return the new file URI if needed
-		} catch (error) {
-			console.error('Failed to save video to document directory:', error);
-			return null;
-		}
-	};
-	let recordVideo = () => {
+	let recordVideo = async () => {
 		setRecording(true);
 		let options = {
 			quality: "1080p",
 			maxDuration: 60,
 			mute: true
-        };
-		cameraRef.current.recordAsync(options).then((recordedVideo) => {
-			//saveVideoToLocalDirectory(recordedVideo.uri);
-			setVideo(recordedVideo);
+		};
+		try {
+			const recordedVideo = await cameraRef.current.recordAsync(options);
+			if (recordedVideo && recordedVideo.uri) {
+				console.log('Recorded video URI:', recordedVideo.uri);
+				// Now you can use recordedVideo.uri to send the video URI to your Flask backend
+			} else {
+				console.error('Failed to record video: recordedVideo or recordedVideo.uri is undefined');
+			}
 			setRecording(false);
-		});
-    };
+		} catch (error) {
+			console.error('Failed to record video:', error);
+			setRecording(false);
+		}
+	};
 
-	let stopRecording = () => {
-		setRecording(false);
-		cameraRef.current.stopRecording();
-    };
 
-	if(video){
+	let stopRecording = async () => {
+		if (recording) {
+			setRecording(false);
+			try {
+				await cameraRef.current.stopRecording();
+			} catch (error) {
+				console.error('Failed to stop recording:', error);
+			}
+		}
+	};
+
+	if (video) {
 		return (
 			<SafeAreaView style={styles.container}>
 				<Video
 					style={styles.camera}
-					source={{uri: video.uri}}
+					source={{ uri: video.uri }}
 					autoplay
 					useNativeControls
-					resizeMode = 'contain'
+					resizeMode='contain'
 					isLooping
 				/>
 			</SafeAreaView>
@@ -96,8 +88,6 @@ export default function CameraScreen({ navigation }) {
 			<Text></Text>
 			<Camera
 				style={styles.camera}
-				type={type}
-				flashMode = {flash}
 				ref={cameraRef}
 			>
 				<View style={styles.buttonContainer}>
@@ -105,9 +95,8 @@ export default function CameraScreen({ navigation }) {
 				</View>
 			</Camera>
 			<View>
-
+				{(hasCameraPermission) ? (<Text>Camera permission on</Text>) : (<Text>Camera permission off</Text>)}
 			</View>
-			{(hasCameraPermission) ? (<Text>Camera permission on</Text>) : (<Text>Camera permission off</Text>)}
 			<StatusBar style="auto" />
 		</View>
 	);
@@ -120,7 +109,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-	camera:{
+	camera: {
 		width: Dimensions.get('window').width / 1.5,
 		height: Dimensions.get('window').height / 1.5,
 		borderRadius: 20,
@@ -128,7 +117,5 @@ const styles = StyleSheet.create({
 	buttonContainer: {
 		backgroundColor: "#fff",
 		alignSelf: "flex-end",
-
 	}
 });
-
