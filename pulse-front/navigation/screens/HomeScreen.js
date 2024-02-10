@@ -6,7 +6,10 @@ const theme = {
 	...DefaultTheme,
 	colors: {
 		...DefaultTheme.colors,
-		primary: '#0091ff',
+		primary: '#00a8e8',
+		secondary: '#007ea7',
+		tertiary: '#003459',
+		accent: '#00171f',
 		background: 'white',
 	},
 };
@@ -23,13 +26,13 @@ export default function HomeScreen({ navigation }) {
 						<Paragraph>Card content</Paragraph>
 					</Card.Content>
 				</Card>
-				<Button icon="camera" mode="contained" onPress={() => console.log('Pressed')} color={theme.colors.primary}>
+				<Button icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')} color={theme.colors.primary}>
 					Start Recording
 				</Button>
-				<Button icon="chart-bar" mode="outlined" onPress={() => console.log('Pressed')} color={theme.colors.primary} style={{ marginTop: 10 }}>
+				<Button icon="chart-bar" mode="outlined" onPress={() => navigation.navigate('Statistics')} color={theme.colors.primary} style={{ marginTop: 10 }}>
 					View Statistics
 				</Button>
-				<Text style={{ marginTop: 20, fontSize: 16, color: theme.colors.primary }}>
+				<Text style={{ marginTop: 20, fontSize: 16, color: theme.colors.secondary }} >
 					This is a sample text. You can replace it with any text you want.
 				</Text>
 			</View>
