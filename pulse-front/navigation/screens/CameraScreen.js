@@ -1,91 +1,124 @@
 import * as React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import {useState, useEffect, useRef} from 'react';
-import { StyleSheet, Text, View, Dimensions, Button, SafeAreaView } from 'react-native';
-import {Camera, CameraType} from 'expo-camera';
-import {Video} from 'expo-av';
+import { useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, Dimensions, Button, SafeAreaView, TouchableOpacity } from 'react-native';
+import { Camera } from 'expo-camera';
+import { Video } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function CameraScreen({ navigation }) {
 	const [hasCameraPermission, setHasCameraPermission] = useState(null);
-	const [image, setImage] = useState(null);
-	const [type, setType] = useState(Camera.Constants.Type.front);
-	const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
-	const [recording, setRecording] = useState(false);
 	const [video, setVideo] = useState(null);
+	const [recording, setRecording] = useState(false);
+	const [cameraType, setCameraType] = useState(Camera.Constants.Type.back); // Initially set to back camera
 	const cameraRef = useRef(null);
 
-    const initializeCamera = async () => {
-        const cameraStatus = await Camera.requestCameraPermissionsAsync();
-        setHasCameraPermission(cameraStatus.status === 'granted');
-    };
+	const initializeCamera = async () => {
+		const cameraStatus = await Camera.requestCameraPermissionsAsync();
+		setHasCameraPermission(cameraStatus.status === 'granted');
+	};
 
 	useEffect(() => {
-			MediaLibrary.requestPermissionsAsync();
-        initializeCamera();
+		MediaLibrary.requestPermissionsAsync();
+		initializeCamera();
 	}, []);
 
-    useFocusEffect(
-        React.useCallback(() => {
-            initializeCamera();
-            return () => {
-                if (recording) {
-                    stopRecording();
-                }
-            };
-        }, [])
-    );
+	useFocusEffect(
+		React.useCallback(() => {
+			initializeCamera();
+			return () => {
+				if (recording) {
+					stopRecording();
+				}
+			};
+		}, [])
+	);
 
-	const saveVideoToLocalDirectory = async (videoUri) => {
-		try {
-			// Get the file name
-			const fileUri = videoUri.split('/').pop();
-			const newFileUri = FileSystem.documentDirectory + fileUri;
-			alert(newFileUri);
-			// Copy the video to the app's document directory
-			await FileSystem.copyAsync({
-				from: videoUri,
-				to: newFileUri,
-			});
-
-			console.error('Video saved to document directory successfully!');
-
-			return newFileUri; // Return the new file URI if needed
-		} catch (error) {
-			console.error('Failed to save video to document directory:', error);
-			return null;
-		}
-	};
-	let recordVideo = () => {
+	let recordVideo = async () => {
 		setRecording(true);
 		let options = {
 			quality: "1080p",
 			maxDuration: 60,
-			mute: true
-        };
-		cameraRef.current.recordAsync(options).then((recordedVideo) => {
-			//saveVideoToLocalDirectory(recordedVideo.uri);
-			setVideo(recordedVideo);
+			mute: true,
+		};
+		try {
+			const recordedVideo = await cameraRef.current.recordAsync(options);
+			if (recordedVideo && recordedVideo.uri) {
+				console.log('Recorded video URI:', recordedVideo.uri);
+				// Send the recorded video to the Flask backend
+				sendVideoToBackend(recordedVideo.uri);
+			} else {
+				console.error('Failed to record video: recordedVideo or recordedVideo.uri is undefined');
+			}
 			setRecording(false);
-		});
-    };
+		} catch (error) {
+			console.error('Failed to record video:', error);
+			setRecording(false);
+		}
+	};
 
-	let stopRecording = () => {
-		setRecording(false);
-		cameraRef.current.stopRecording();
-    };
+	let stopRecording = async () => {
+		if (recording) {
+			setRecording(false);
+			try {
+				await cameraRef.current.stopRecording();
+			} catch (error) {
+				console.error('Failed to stop recording:', error);
+			}
+		}
+	};
 
-	if(video){
+	const sendVideoToBackend = async (videoUri) => {
+		try {
+			const videoFile = await FileSystem.readAsStringAsync(videoUri, { encoding: FileSystem.EncodingType.Base64 });
+			const formData = new FormData();
+			formData.append('video', {
+				uri: videoUri,
+				type: 'video/mp4',
+				name: 'recorded-video.mp4',
+			});
+
+			const requestOptions = {
+				method: 'POST',
+				body: formData,
+				redirect: 'follow',
+			};
+
+			const response = await fetch('http://100.66.10.237:5000/upload-video', requestOptions);
+
+			if (response.ok) {
+				console.log('Video uploaded successfully');
+			} else {
+				console.error('Failed to upload video:', response.status);
+			}
+		} catch (error) {
+			console.error('Error uploading video:', error);
+		}
+	};
+
+	const flipCamera = () => {
+		setCameraType(
+			cameraType === Camera.Constants.Type.back
+				? Camera.Constants.Type.front
+				: Camera.Constants.Type.back
+		);
+	};
+
+	const handleDoubleTap = () => {
+		flipCamera();
+	};
+
+	if (video) {
 		return (
 			<SafeAreaView style={styles.container}>
 				<Video
 					style={styles.camera}
-					source={{uri: video.uri}}
+					source={{ uri: video.uri }}
 					autoplay
 					useNativeControls
-					resizeMode = 'contain'
+					resizeMode='contain'
 					isLooping
 				/>
 			</SafeAreaView>
@@ -93,21 +126,22 @@ export default function CameraScreen({ navigation }) {
 	}
 	return (
 		<View style={styles.container}>
-			<Text></Text>
-			<Camera
-				style={styles.camera}
-				type={type}
-				flashMode = {flash}
-				ref={cameraRef}
-			>
-				<View style={styles.buttonContainer}>
-					<Button title={recording ? "Stop Recording" : "Record Video"} onPress={recording ? stopRecording : recordVideo} />
-				</View>
-			</Camera>
+			<TouchableOpacity activeOpacity={1} onPress={handleDoubleTap} onDoublePress={handleDoubleTap} style={styles.cameraContainer}>
+				<Camera
+					style={styles.camera}
+					type={cameraType}
+					ref={cameraRef}
+					autoFocus={Camera.Constants.AutoFocus.on}
+				>
+					<View style={styles.overlay} />
+					<View style={styles.buttonContainer}>
+						<Button title={recording ? "Stop Recording" : "Record Video"} onPress={recording ? stopRecording : recordVideo} />
+					</View>
+				</Camera>
+			</TouchableOpacity>
 			<View>
-
+				{(hasCameraPermission) ? (<Text>Camera permission on</Text>) : (<Text>Camera permission off</Text>)}
 			</View>
-			{(hasCameraPermission) ? (<Text>Camera permission on</Text>) : (<Text>Camera permission off</Text>)}
 			<StatusBar style="auto" />
 		</View>
 	);
@@ -120,15 +154,31 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-	camera:{
-		width: Dimensions.get('window').width / 1.5,
-		height: Dimensions.get('window').height / 1.5,
+	cameraContainer: {
+		flex: 1,
+		width: '90%',
+		height: '90%',
+		borderRadius: 20,
+		overflow: 'hidden',
+	},
+	camera: {
+		flex: 1,
 		borderRadius: 20,
 	},
 	buttonContainer: {
 		backgroundColor: "#fff",
 		alignSelf: "flex-end",
-
+		flexDirection: 'row', // Added to align buttons horizontally
+		justifyContent: 'space-between', // Added to distribute space evenly between buttons
+	},
+	overlay: {
+		position: 'absolute',
+		top: '35%', // Adjust position to center
+		left: '25%', // Adjust position to center
+		width: '50%', // Adjust size as needed
+		height: '40%', // Adjust size as needed
+		borderWidth: 2,
+		borderColor: 'red',
+		backgroundColor: 'transparent',
 	}
 });
-

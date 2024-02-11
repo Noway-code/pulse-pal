@@ -26,10 +26,10 @@ export default function HomeScreen({ navigation }) {
 						<Paragraph>Card content</Paragraph>
 					</Card.Content>
 				</Card>
-				<Button icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')} color={theme.colors.primary}>
+				<Button icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')} colorButton={theme.colors.primary}>
 					Start Recording
 				</Button>
-				<Button icon="chart-bar" mode="outlined" onPress={() => navigation.navigate('Statistics')} color={theme.colors.primary} style={{ marginTop: 10 }}>
+				<Button icon="chart-bar" mode="outlined" onPress={() => navigation.navigate('Statistics')} colorButton={theme.colors.primary} style={{ marginTop: 10 }}>
 					View Statistics
 				</Button>
 				<Text style={{ marginTop: 20, fontSize: 16, color: theme.colors.secondary }} >
