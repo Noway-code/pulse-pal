@@ -8,22 +8,27 @@ import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import { useFocusEffect } from '@react-navigation/native';
 import CountdownTimer from './components/CountdownTimer';
+import client from '../../api/client';
 
 export default function CameraScreen({ navigation }) {
 	const [hasCameraPermission, setHasCameraPermission] = useState(null);
 	const [video, setVideo] = useState(null);
 	const [recording, setRecording] = useState(false);
-	const [cameraType, setCameraType] = useState(Camera.Constants.Type.back); // Initially set to back camera
+	const [cameraType, setCameraType] = useState(Camera.Constants.Type.front); // Initially set to front camera
+	const [hr, setHr] = useState(null);
+	const [hrv, setHrv] = useState(null);
 	const cameraRef = useRef(null);
 
-	const initializeCamera = async () => {
-		const cameraStatus = await Camera.requestCameraPermissionsAsync();
-		setHasCameraPermission(cameraStatus.status === 'granted');
+	const initializeCamera = () => {
+		Camera.requestCameraPermissionsAsync().then((cameraStatus) => {
+			setHasCameraPermission(cameraStatus.status === 'granted');
+		})
 	};
 
 	useEffect(() => {
-		MediaLibrary.requestPermissionsAsync();
-		initializeCamera();
+		MediaLibrary.requestPermissionsAsync().then((mediaLibraryStatus) => {
+			initializeCamera();
+		})
 	}, []);
 
 	useFocusEffect(
@@ -37,15 +42,14 @@ export default function CameraScreen({ navigation }) {
 		}, [])
 	);
 
-	let recordVideo = async () => {
+	const recordVideo = () => {
 		setRecording(true);
 		let options = {
 			quality: "1080p",
-			maxDuration: 10,
+			maxDuration: 15,
 			mute: true,
 		};
-		try {
-			const recordedVideo = await cameraRef.current.recordAsync(options);
+		cameraRef.current.recordAsync(options).then(recordedVideo => {
 			if (recordedVideo && recordedVideo.uri) {
 				console.log('Recorded video URI:', recordedVideo.uri);
 				// Send the recorded video to the Flask backend
@@ -54,75 +58,104 @@ export default function CameraScreen({ navigation }) {
 				console.error('Failed to record video: recordedVideo or recordedVideo.uri is undefined');
 			}
 			setRecording(false);
-		} catch (error) {
-			console.error('Failed to record video:', error);
-			setRecording(false);
-		}
+		}).catch(
+			error => {
+				console.error('Failed to record video:', error);
+				setRecording(false);
+			}
+		)
 	};
 
-	let stopRecording = async () => {
+	const stopRecording = () => {
 		if (recording) {
 			setRecording(false);
-			try {
-				await cameraRef.current.stopRecording();
-			} catch (error) {
-				console.error('Failed to stop recording:', error);
-			}
-		}
+			cameraRef.current.stopRecording().then(() => { })
+				.catch(error => {
+					console.error('Failed to stop recording:', error);
+				})
+
+		};
 	};
 
-	const sendVideoToBackend = async (videoUri) => {
-		try {
-			const videoFile = await FileSystem.readAsStringAsync(videoUri, { encoding: FileSystem.EncodingType.Base64 });
-			const formData = new FormData();
-			formData.append('video', {
-				uri: videoUri,
-				type: 'video/mp4',
-				name: 'recorded-video.mp4',
-			});
+	const sendVideoToBackend = (videoUri) => {
+		FileSystem.readAsStringAsync(videoUri, { encoding: FileSystem.EncodingType.Base64 }).then((videoData) => {
+			setVideo(videoData);
+		})
 
-			const requestOptions = {
-				method: 'POST',
-				body: formData,
-				redirect: 'follow',
-				setTimeout
-			};
+		const formData = new FormData();
+		formData.append('video', {
+			uri: videoUri,
+			type: 'video/mp4',
+			name: 'recorded-video.mp4',
+		});
 
-			console.log("TESTING")
+		const requestOptions = {
+			method: 'POST',
+			body: formData,
+			redirect: 'follow',
+		};
 
-			fetch('http://100.66.9.141:5000/upload-video', requestOptions)
-				.then(resp => {
-					console.log('Response:', resp)
+		console.log("TESTINGax")
 
-					if (resp.status === 200) {
-						console.log('Video uploaded successfully');
-						return resp.json();
-					}
-				})
-				.then(data => {
-					console.log('Data:', data);
-				})
-				.catch(error => {
-					console.log('Error uploading video:', error)
-				})
+		fetch('http://100.66.9.141:5000/upload-video', requestOptions)
+			.then(resp => {
+				console.log('Response:', resp)
 
-			// const response = await fetch('http://100.66.9.141:5000/upload-video', requestOptions);
+				if (resp.status === 200) {
+					console.log('Video uploaded successfully');
+					return resp.json();
+				}
+			})
+			.then(data => {
+				console.log("body")
+				return fetch('http://100.66.9.141:5000/process-video');
+			})
+			.then(resp => {
+				console.log('Response:', resp)
 
-			// console.log('Response:', response)
-			// if (response.status === 200) {
-			// 	console.log('Video uploaded successfully');
-			// 	console.log(response.body)
-			// 	response.json().then(resp => {
-			// 		console.log("body")
-			// 		console.log(resp);
-			// 	})
-			// }
-			// else {
-			// 	console.error('Failed to upload video:', response.status);
-			// }
-		} catch (error) {
-			console.error('Error uploading video:', error);
-		}
+				if (resp.status === 200) {
+					console.log('Video processed successfully');
+					return resp.json();
+				}
+
+			})
+			.then(data => {
+				console.log("body")
+				setHr(data.hr)
+				console.log(data.hr);
+				return fetch('http://100.66.9.141:5000/analyze-video');
+			})
+			.then(resp => {
+				console.log('Response:', resp)
+
+				if (resp.status === 200) {
+					console.log('Video analyzed successfully');
+					return resp.json();
+				}
+			})
+			.then(data => {
+				console.log("body")
+				console.log(data);
+				setHrv(data);
+			})
+			.catch(error => {
+				console.log('Error processing video:', error)
+			})
+
+		// const response = await fetch('http://100.66.9.141:5000/upload-video', requestOptions);
+
+		// console.log('Response:', response)
+		// if (response.status === 200) {
+		// 	console.log('Video uploaded successfully');
+		// 	console.log(response.body)
+		// 	response.json().then(resp => {
+		// 		console.log("body")
+		// 		console.log(resp);
+		// 	})
+		// }
+		// else {
+		// 	console.error('Failed to upload video:', response.status);
+		// }
 	};
 
 	const flipCamera = () => {
@@ -163,7 +196,7 @@ export default function CameraScreen({ navigation }) {
 					{recording ?
 						<CountdownTimer
 							style={{ height: '10%' }}
-							duration={10}
+							duration={15}
 						/>
 						: <View></View>
 					}

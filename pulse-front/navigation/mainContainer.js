@@ -7,6 +7,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import HomeScreen from './screens/HomeScreen';
 import CameraScreen from "./screens/CameraScreen";
 import StatisticsScreen from "./screens/StatisticsScreen";
+import {LinearGradient} from "expo-linear-gradient";
 
 // Screen Names
 const Home = "Home";
@@ -22,6 +23,7 @@ function MainContainer() {
 			<Tab.Navigator
 				initialRouteName={Home}
 				screenOptions={({ route }) => ({
+					headerShown: false,
 					tabBarIcon: ({ focused, color, size }) => {
 						let iconName;
 						switch (route.name) {
@@ -48,7 +50,7 @@ function MainContainer() {
 					tabBarStyle: {
 						display: 'flex',
 						padding: 10,
-						height: 70
+						height: 80
 					}
 				})}
 			>

@@ -14,7 +14,7 @@ const CountdownTimer = ({ duration }) => {
 
   const formatTime = (time) => {
     const seconds = time;
-    return `${seconds.toString().padStart(1, '0')}`;
+    return `${seconds < 0 ? '0' : seconds.toString().padStart(1, '0')}`;
   };
 
   return (
@@ -28,12 +28,12 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor:'white',
-    width:'20%',
+    backgroundColor: 'white',
+    width: '20%',
     borderRadius: '50%',
     marginLeft: 'auto',
     marginRight: 'auto',
-    marginTop:15,
+    marginTop: 15,
     float: 'center',
   },
   timerText: {
