@@ -14,7 +14,7 @@ function App() {
   const [file, setFile] = useState(null);
   const [filerad, setFileRad] = useState([]);
   const [userId, setUserId] = useState([]);
-  const [contextinfo, setContextinfo] = useState(null);
+  const [contextinfo, setContextinfo] = useState("");
 
   //summary vars
   const [summary, setSummary] = useState(null);
@@ -32,7 +32,7 @@ function App() {
     // processing for Rad
   }
 
-  const submitInfo = () => {
+  const submitInfo = async () => {
     const ary = [...file]
     ary.reduce((p, f) => {
       return p.then(_ => fetch("http://100.66.9.141:5000/upload-pdf", {
@@ -48,15 +48,21 @@ function App() {
 
         })
       );
-    }, Promise.resolve());
-    summarize();
+    }, Promise.resolve())
+      .then(
+        () => {
+          summarize()
+        }
+      )
+      .then(() => { })
+      ;
 
   }
-  async function summarize(){
+  async function summarize() {
     const systemMessage = {
       role: "system",
       //content: "Answer like you are a pirate",
-      content: "summarize this content" + contextinfo,
+      content: "summarize this content. only talk about the medical history because you are summarizing for a doctor." + contextinfo,
     }
     const apiRequestBody = {
       "model": "gpt-3.5-turbo",
@@ -177,7 +183,7 @@ function App() {
             placeholder="Enter Patient ID..."
           />
 
-          <button onClick={submitInfo} style={{cursor:'pointer'}}>Submit</button>
+          <button onClick={async () => { await submitInfo() }} style={{ cursor: 'pointer' }}>Submit</button>
           <h4 style={{ color: '#61dafb' }}>EHR</h4>
           <label className="uploadiconcontainer" for="file-upload">
             <img src={icon} className="uploadicon" alt="Upload File" />
@@ -228,7 +234,7 @@ function App() {
               </MainContainer>
             </div>
           </div>
-        ) : (<div style={{display:"none"}}></div>)
+        ) : (<div style={{ display: "none" }}></div>)
         }
       </header>
 
