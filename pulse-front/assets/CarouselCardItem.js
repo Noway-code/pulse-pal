@@ -13,7 +13,7 @@ const CarouselCardItem = ({ item, index }) => {
 			case 0:
 				navigation.navigate('Camera');
 				break;
-			case 1:
+			case 2:
 				navigation.navigate('Statistics');
 				break;
 			default:
@@ -22,7 +22,7 @@ const CarouselCardItem = ({ item, index }) => {
 	};
 
 	return (
-		<TouchableOpacity onPress={handlePress} style={styles.container} key={index}>
+		<TouchableOpacity onPress={handlePress} style={styles.container} key={index} activeOpacity={0.8}>
 			<View >
 				<Image
 					source={{ uri: item.imgUrl }}
@@ -40,11 +40,12 @@ const styles = StyleSheet.create({
 	container: {
 		flex: .5,
 		justifyContent: 'flex-end',
-		backgroundColor: 'rgb(0,185,255)',
+		backgroundColor: 'rgba(108,212,255,0.77)',
 		borderRadius: 8,
 		width: ITEM_WIDTH,
 		paddingBottom: 10,
 		shadowColor: "#000",
+		marginTop: 5,
 		shadowOffset: {
 			width: 0,
 			height: 3,
@@ -62,6 +63,8 @@ const styles = StyleSheet.create({
 	},
 	header: {
 		color: "#003459",
+		paddingTop: 5,
+		paddingBottom: 5,
 		fontSize: 24,
 		fontWeight: "bold",
 		paddingLeft: 20,
