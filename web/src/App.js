@@ -7,6 +7,7 @@ import icon from "./img/uploadicon.png";
 function App() {
   //file vars
   const[file, setFile] = useState([]);
+  const[filerad, setFileRad] = useState([]);
   const[userId, setUserId] = useState([]);
 
   //summary vars
@@ -15,6 +16,13 @@ function App() {
 
   const addFiles = (files) => {
     setFile(files);
+    console.log("bro");
+    console.log(files);
+    console.log("bro");
+  }
+
+  const addFilesRad = (files) => {
+    setFileRad(files);
     console.log("bro");
     console.log(files);
     console.log("bro");
@@ -111,7 +119,8 @@ function App() {
         onChange={(event) => setUserId(event.target.value)} // Update state variable inline
         placeholder="Enter Patient ID..."
       />
-    
+      
+      <h4 style={{color:'#61dafb'}}>EHR</h4>
       <label className="uploadiconcontainer" for="file-upload">
           <img src={icon} className="uploadicon" alt="Upload File" />
       </label>
@@ -122,6 +131,19 @@ function App() {
           onChange = {(e) => addFiles(e.target.files)}
           style = {{display:"none"}}
         ></input>
+
+      <h4 style={{color:'gray'}}>Radiology Report</h4>
+      <label className="uploadiconcontainerrad" for="file-upload">
+          <img src={icon} className="uploadiconrad" alt="Upload File" />
+      </label>
+        <input 
+          id="file-upload"
+          type="file"
+          multiple
+          onChange = {(e) => addFilesRad(e.target.files)}
+          style = {{display:"none"}}
+        ></input>
+
       </div>
       <div >
         <h2>Record Summary</h2>

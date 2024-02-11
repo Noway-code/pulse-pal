@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, Dimensions, Button, SafeAreaView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Button, SafeAreaView, TouchableOpacity, Pressable, Image } from 'react-native';
 import { Camera } from 'expo-camera';
 import { Video } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import { useFocusEffect } from '@react-navigation/native';
+import CountdownTimer from './components/CountdownTimer';
 
 export default function CameraScreen({ navigation }) {
 	const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -40,7 +41,7 @@ export default function CameraScreen({ navigation }) {
 		setRecording(true);
 		let options = {
 			quality: "1080p",
-			maxDuration: 60,
+			maxDuration: 10,
 			mute: true,
 		};
 		try {
@@ -133,9 +134,20 @@ export default function CameraScreen({ navigation }) {
 					ref={cameraRef}
 					autoFocus={Camera.Constants.AutoFocus.on}
 				>
+					{recording ? 					
+					<CountdownTimer 
+						style={{height:'10%'}}
+						duration={10}
+						/>
+					: <View></View>
+					}
+
 					<View style={styles.overlay} />
 					<View style={styles.buttonContainer}>
-						<Button title={recording ? "Stop Recording" : "Record Video"} onPress={recording ? stopRecording : recordVideo} />
+						{/*<Button style={{color:'red'}} title={recording ? "Stop Recording" : "Record Video"} onPress={recording ? stopRecording : recordVideo} /> */}
+						<Pressable style={recording ? styles.buttonstprec : styles.buttonrec} onPress={recording ? stopRecording : recordVideo}>
+							<Text style={recording ?styles.buttontxtstprec :styles.buttontxtrec}>{recording ? "Stop Recording" : "Record Video"}</Text>
+						</Pressable>
 					</View>
 				</Camera>
 			</TouchableOpacity>
@@ -166,10 +178,30 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 	},
 	buttonContainer: {
-		backgroundColor: "#fff",
-		alignSelf: "flex-end",
-		flexDirection: 'row', // Added to align buttons horizontally
-		justifyContent: 'space-between', // Added to distribute space evenly between buttons
+		height: '95%',
+		alignSelf: "center",
+		flexDirection: 'column', // Added to align buttons horizontally
+		justifyContent: 'flex-end', // Added to distribute space evenly between buttons
+		color: 'red',
+		position: 'absolute',
+	},
+	buttonrec:{
+		backgroundColor: 'white',
+		padding: 20,
+		borderRadius: '50%',
+	},
+	buttonstprec:{
+		backgroundColor: 'red',
+		padding: 20,
+		borderRadius: '50%',
+	},
+	buttontxtrec:{
+		color:'red',
+		fontSize:17,
+	},
+	buttontxtstprec:{
+		color:'white',
+		fontSize:17,
 	},
 	overlay: {
 		position: 'absolute',
