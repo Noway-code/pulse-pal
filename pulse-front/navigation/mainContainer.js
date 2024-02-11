@@ -11,7 +11,7 @@ import StatisticsScreen from "./screens/StatisticsScreen";
 // Screen Names
 const Home = "Home";
 const Camera = "Camera";
-const Settings = "Settings";
+const Statistics = "Statistics";
 
 // Create the bottom tab navigator
 const Tab = createBottomTabNavigator();
@@ -31,8 +31,8 @@ function MainContainer() {
 							case Camera:
 								iconName = focused ? 'camera' : 'camera-outline';
 								break;
-							case Settings:
-								iconName = focused ? 'settings' : 'settings-outline';
+							case Statistics:
+								iconName = focused ? 'stats-chart' : 'stats-chart-outline';
 								break;
 							default:
 								iconName = focused ? 'ios-information-circle' : 'ios-information-circle-outline';
@@ -54,7 +54,7 @@ function MainContainer() {
 			>
 				<Tab.Screen name={Home} component={HomeScreen} />
 				<Tab.Screen name={Camera} component={CameraScreen} />
-				<Tab.Screen name={Settings} component={StatisticsScreen} />
+				<Tab.Screen name={Statistics} component={StatisticsScreen} />
 			</Tab.Navigator>
 		</NavigationContainer>
 	);
