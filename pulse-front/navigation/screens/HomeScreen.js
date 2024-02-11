@@ -19,14 +19,14 @@ export default function HomeScreen({ navigation }) {
 	return (
 		<PaperProvider theme={theme}>
 			<View style={{ flex: 1, alignItems: 'center', backgroundColor: theme.colors.background }}>
-				<Title style={{ color: theme.colors.primary }}>Welcome to Our App</Title>
-				<Card style={{ width: '90%', margin: 10 }}>
-					<Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-					<Card.Content>
-						<Title>Card title</Title>
-						<Paragraph>Card content</Paragraph>
-					</Card.Content>
-				</Card>
+				<Title style={{ flex:0.5, color: theme.colors.primary, paddingBottom:250}}>Welcome to Our App</Title>
+				{/*<Card style={{ width: '90%', margin: 10 }}>*/}
+				{/*	<Card.Cover source={{ uri: 'https://picsum.photos/700' }} />*/}
+				{/*	<Card.Content>*/}
+				{/*		<Title>Card title</Title>*/}
+				{/*		<Paragraph>Card content</Paragraph>*/}
+				{/*	</Card.Content>*/}
+				{/*</Card>*/}
 				<Divider style={{ width: '90%', margin: 10 }} />
 				<View>
 					<CarouselCards/>

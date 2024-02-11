@@ -10,6 +10,7 @@ const CarouselCardItem = ({ item, index }) => {
 			<Image
 				source={{ uri: item.imgUrl }}
 				style={styles.image}
+				resizeMode="cover"
 			/>
 			<Text style={styles.header}>{item.title}</Text>
 			<Text style={styles.body}>{item.body}</Text>
@@ -33,17 +34,22 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.29,
 		shadowRadius: 4.65,
 		elevation: 7,
+		overflow: "visible",
+
 	},
 	image: {
 		width: ITEM_WIDTH,
-		height: 300,
+		height: 170,
+		borderRadius: 10,
+		overflow: "hidden",
+
+
 	},
 	header: {
 		color: "#222",
 		fontSize: 24,
 		fontWeight: "bold",
 		paddingLeft: 20,
-		paddingTop: 10
 	},
 	body: {
 		color: "#222",
