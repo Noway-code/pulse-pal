@@ -7,11 +7,8 @@ import { Video } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import { useFocusEffect } from '@react-navigation/native';
-<<<<<<< Updated upstream
 import CountdownTimer from './components/CountdownTimer';
-=======
 import client from '../../api/client';
->>>>>>> Stashed changes
 
 export default function CameraScreen({ navigation }) {
 	const [hasCameraPermission, setHasCameraPermission] = useState(null);
