@@ -2,7 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from json import dump, load
 
-from radiology import parse_document
+from ehr import parse_document
+
+# from radiology import parse_document
 from yarppg.yarppg.main import get_data
 from yarppg.hrv import get_fps, process_raw_data
 
@@ -13,6 +15,17 @@ CORS(app, supports_credentials=True)
 @app.route("/test")
 def test():
     return "test!!"
+
+
+@app.route("/user-data")
+def user_data():
+    with open("raw_data.json", "r") as f:
+        raw_data = load(f)
+
+    series = raw_data["series"]
+    series = [x[1] for x in series if abs(x[1]) < 1]
+
+    return jsonify({"series": series, "hr": raw_data["hr"]}), 200
 
 
 @app.route("/test-post", methods=["POST"])
