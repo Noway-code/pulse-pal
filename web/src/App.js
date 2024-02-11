@@ -15,6 +15,17 @@ function App() {
   const [filerad, setFileRad] = useState([]);
   const [userId, setUserId] = useState([]);
   const [contextinfo, setContextinfo] = useState("");
+  const [hrv, setHrv] = useState(null);
+
+  useEffect(() => {
+    fetch("http://100.66.9.141:5000/analyze-video")
+      .then(resp => {
+        return resp.json()
+      })
+      .then(data => {
+        setHrv(data);
+      })
+  }, [])
 
   //summary vars
   const [summary, setSummary] = useState(null);
@@ -62,7 +73,7 @@ function App() {
     const systemMessage = {
       role: "system",
       //content: "Answer like you are a pirate",
-      content: "summarize this content. only talk about the medical history because you are summarizing for a doctor." + contextinfo,
+      content: "summarize this content. you are summarizing for a medical professional. they need a quick summary of important details.  " + contextinfo,
     }
     const apiRequestBody = {
       "model": "gpt-3.5-turbo",
@@ -133,6 +144,23 @@ function App() {
       return { role: role, content: messageObject.message }
     });
 
+    let extra = "";
+
+    if (userId === 21) {
+      extra = checkSdnnAndDiseases("high", contextinfo);
+    }
+    else if (userId === 22) {
+      extra = checkSdnnAndDiseases("medium", contextinfo);
+    }
+    else {
+      if (hrv.SDNN < 50) {
+        extra = checkSdnnAndDiseases("high", contextinfo);
+      }
+      else if (hrv.SDNN < 100) {
+        extra = checkSdnnAndDiseases("medium", contextinfo);
+      }
+    }
+
     const systemMessage = {
       role: "system",
       //content: "Answer like you are a pirate",
@@ -141,7 +169,7 @@ function App() {
     const apiRequestBody = {
       "model": "gpt-3.5-turbo",
       "messages": [
-        systemMessage,
+        systemMessage + "\n" + extra,
         ...apiMessages
       ]
     }
@@ -165,6 +193,63 @@ function App() {
       );
       setTyping(false);
     });
+  }
+
+  function checkSdnnAndDiseases(sdnnSeverity, output) {
+    let messages = ""; // Initialize empty string to collect messages
+    let riskLevel = "none"; // Default, if SDNN severity is none or unspecified
+
+    // Function to add messages, handling newline concatenation
+    const addMessage = (msg) => {
+      messages += messages === "" ? msg : "\n" + msg;
+    };
+
+    // Initial advice based on SDNN severity
+    if (sdnnSeverity === "medium") {
+      addMessage("Note: The patient has a higher risk of Metabolic Syndrome (MetS).");
+      addMessage("Note: The patient has a higher risk of Hypertension.");
+      addMessage("Note: The patient has a higher risk of Cardiovascular disease.");
+      riskLevel = "higher";
+    } else if (sdnnSeverity === "high") {
+      addMessage("Note: The patient has a high risk of Metabolic Syndrome (MetS).");
+      addMessage("Note: The patient has a high risk of Hypertension.");
+      addMessage("Note: The patient has a higher risk of Cardiovascular disease.");
+      riskLevel = "very likely";
+    }
+
+    // Diseases to check, including specific messages for Diabetes
+    const diseases = {
+      "Diabetes": "The patient has a higher chance of experiencing Hypoglycemia and Diabetic Autonomic Neuropathy.",
+      "Fibromyalgia": "",
+      "Asthma": "",
+      "Depression": "Depression severity might be correlated with abnormal HRV metrics.",
+      "Chronic Heart Failure": "CHF patients with abnormal HRV have a higher risk of adverse outcomes."
+    };
+
+    // Check for each disease in the output string
+    for (const [disease, message] of Object.entries(diseases)) {
+      if (output.toLowerCase().includes(disease.toLowerCase())) { // Case-insensitive search
+        if (disease === "Diabetes") {
+          addMessage(`Note: ${message}`);
+          if (riskLevel === "higher") {
+            addMessage("Additionally, due to the medium SDNN severity, the patient should be closely monitored for these conditions.");
+          } else if (riskLevel === "very likely") {
+            addMessage("Additionally, due to the high SDNN severity, immediate examination for these conditions is recommended.");
+          }
+        } else {
+          if (riskLevel === "higher") {
+            addMessage(`Note: The patient with ${disease} has a higher chance of worse symptoms and should be asked.`);
+          } else if (riskLevel === "very likely") {
+            addMessage(`Note: The patient with ${disease} has a very likely chance of worse symptoms and should be examined.`);
+          }
+          if (message) {
+            addMessage(`Additional note: ${message}`);
+          }
+        }
+      }
+    }
+
+    return messages;
   }
 
   return (
