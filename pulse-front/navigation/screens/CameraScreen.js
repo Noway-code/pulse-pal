@@ -8,7 +8,6 @@ import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import { useFocusEffect } from '@react-navigation/native';
 import CountdownTimer from './components/CountdownTimer';
-import client from '../../api/client';
 
 export default function CameraScreen({ navigation }) {
 	const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -161,24 +160,24 @@ export default function CameraScreen({ navigation }) {
 					ref={cameraRef}
 					autoFocus={Camera.Constants.AutoFocus.on}
 				>
-					{recording ? 					
-					<CountdownTimer 
-						style={{height:'10%'}}
-						duration={10}
+					{recording ?
+						<CountdownTimer
+							style={{ height: '10%' }}
+							duration={10}
 						/>
-					: <View></View>
+						: <View></View>
 					}
 
 					<View style={styles.overlay} />
 					<View style={styles.buttonContainer}>
 						{/*<Button style={{color:'red'}} title={recording ? "Stop Recording" : "Record Video"} onPress={recording ? stopRecording : recordVideo} /> */}
 						<Pressable style={recording ? styles.buttonstprec : styles.buttonrec} onPress={recording ? stopRecording : recordVideo}>
-							<Text style={recording ?styles.buttontxtstprec :styles.buttontxtrec}>{recording ? "Stop Recording" : "Record Video"}</Text>
+							<Text style={recording ? styles.buttontxtstprec : styles.buttontxtrec}>{recording ? "Stop Recording" : "Record Video"}</Text>
 						</Pressable>
 					</View>
 				</Camera>
 			</TouchableOpacity>
-			<View style={{position:'absolute', zIndex:-1}}>
+			<View style={{ position: 'absolute', zIndex: -1 }}>
 				{(hasCameraPermission) ? (<Text>Camera permission on</Text>) : (<Text>Camera permission off</Text>)}
 			</View>
 			<StatusBar style="auto" />
@@ -210,23 +209,23 @@ const styles = StyleSheet.create({
 		color: 'red',
 		position: 'absolute',
 	},
-	buttonrec:{
+	buttonrec: {
 		backgroundColor: 'white',
 		padding: 20,
 		borderRadius: '50%',
 	},
-	buttonstprec:{
+	buttonstprec: {
 		backgroundColor: 'red',
 		padding: 20,
 		borderRadius: '50%',
 	},
-	buttontxtrec:{
-		color:'red',
-		fontSize:17,
+	buttontxtrec: {
+		color: 'red',
+		fontSize: 17,
 	},
-	buttontxtstprec:{
-		color:'white',
-		fontSize:17,
+	buttontxtstprec: {
+		color: 'white',
+		fontSize: 17,
 	},
 	overlay: {
 		position: 'absolute',
