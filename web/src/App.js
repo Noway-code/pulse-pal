@@ -176,7 +176,7 @@ function App() {
             onChange={(event) => setUserId(event.target.value)} // Update state variable inline
             placeholder="Enter Patient ID..."
           />
-          
+
           <button onClick={submitInfo} style={{cursor:'pointer'}}>Submit</button>
           <h4 style={{ color: '#61dafb' }}>EHR</h4>
           <label className="uploadiconcontainer" for="file-upload">
@@ -228,7 +228,7 @@ function App() {
               </MainContainer>
             </div>
           </div>
-        ) : (<div></div>)
+        ) : (<div style={{display:"none"}}></div>)
         }
       </header>
 
