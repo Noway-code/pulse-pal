@@ -1,12 +1,16 @@
-import React from 'react'
-import { View } from "react-native"
-import Carousel, { Pagination } from 'react-native-snap-carousel'
-import CarouselCardItem, { SLIDER_WIDTH, ITEM_WIDTH } from './CarouselCardItem'
-import data from './data'
+import React from 'react';
+import { View } from "react-native";
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+import CarouselCardItem, { SLIDER_WIDTH, ITEM_WIDTH } from './CarouselCardItem';
+import data from './data';
 
 const CarouselCards = () => {
-	const [index, setIndex] = React.useState(0)
-	const isCarousel = React.useRef(null)
+	const [index, setIndex] = React.useState(0);
+	const isCarousel = React.useRef(null);
+
+	const renderCarouselItem = ({ item, index }) => (
+		<CarouselCardItem item={item} index={index} />
+	);
 
 	return (
 		<View style={{flex: 1, justifyContent:'flex-end'}}>
@@ -15,7 +19,7 @@ const CarouselCards = () => {
 				layoutCardOffset={9}
 				ref={isCarousel}
 				data={data}
-				renderItem={CarouselCardItem}
+				renderItem={renderCarouselItem}
 				sliderWidth={SLIDER_WIDTH}
 				itemWidth={ITEM_WIDTH}
 				onSnapToItem={(index) => setIndex(index)}
@@ -37,7 +41,7 @@ const CarouselCards = () => {
 				tappableDots={true}
 			/>
 		</View>
-	)
+	);
 }
 
-export default CarouselCards
+export default CarouselCards;

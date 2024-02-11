@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View, Text, Image } from 'react-native';
 import {Button, Provider as PaperProvider, DefaultTheme, Card, Title, Paragraph, Divider} from 'react-native-paper';
 import CarouselCards from "../../assets/CarouselCards";
+import { useFonts, Roboto_500Medium, Roboto_700Bold, Roboto_100Thin, Roboto_300Light} from '@expo-google-fonts/roboto';
 
 const theme = {
 	...DefaultTheme,
@@ -13,13 +14,22 @@ const theme = {
 		accent: '#00171f',
 		background: 'white',
 	},
+
 };
 
 export default function HomeScreen({ navigation }) {
+	let [fontsLoaded, fontError] = useFonts({
+		Roboto_700Bold, Roboto_500Medium, Roboto_300Light, Roboto_100Thin
+	});
+
+	if (!fontsLoaded && !fontError) {
+		return null;
+	}
+
 	return (
 		<PaperProvider theme={theme}>
 			<View style={{ flex: 1, alignItems: 'center', backgroundColor: theme.colors.background }}>
-				<Title style={{ flex:0.5, color: theme.colors.primary, paddingBottom:250}}>Welcome to Our App</Title>
+				<Title style={{ flex:0.5, color: theme.colors.primary, paddingBottom:250, fontFamily: 'Roboto_700Bold'}}>Welcome back, User</Title>
 				{/*<Card style={{ width: '90%', margin: 10 }}>*/}
 				{/*	<Card.Cover source={{ uri: 'https://picsum.photos/700' }} />*/}
 				{/*	<Card.Content>*/}
