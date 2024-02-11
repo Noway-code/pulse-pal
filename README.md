@@ -1,5 +1,5 @@
 # pulse-pal
-
+ 
 Every second for a doctor matters. We save time, increase efficiency, and direct the doctor to key areas of focus for patients. We use an innovative measurement technique to maximize patient comfort.
 
 Our app revolutionizes healthcare by streamlining patient record management and pre-visit screening, significantly boosting efficiency and diagnostic precision. Here's how it benefits both doctors and patients:
