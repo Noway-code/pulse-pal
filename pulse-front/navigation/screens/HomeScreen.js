@@ -106,6 +106,7 @@ export default function HomeScreen({ navigation }) {
 					</SafeAreaView>
 				</View>
 			</ImageBackground>
+
 		</PaperProvider>
 	);
 }
