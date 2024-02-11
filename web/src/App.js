@@ -4,9 +4,14 @@ import './App.css';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator} from "@chatscope/chat-ui-kit-react";
 import icon from "./img/uploadicon.png";
+import {PizZip} from 'pizzip';
+import {Docxtemplater} from 'docxtemplater';
+import {xmlParser} from 'xmlparser';
+import 'pdfjs-dist';
+
 function App() {
   //file vars
-  const[file, setFile] = useState([]);
+  const[file, setFile] = useState(null);
   const[filerad, setFileRad] = useState([]);
   const[userId, setUserId] = useState([]);
 
@@ -15,15 +20,20 @@ function App() {
 
 
   const addFiles = (files) => {
-    setFile(files);
-    // processing for EHC
-  }
+        setFile(files);
+        // processing for EHC
+      }
 
-  const addFilesRad = (files) => {
-    setFileRad(files);
-    // processing for Rad
-  }
+      const addFilesRad = (files) => {
+        setFileRad(files);
+        // processing for Rad
+      }
 
+    const submitInfo = () => {
+        console.log(file);
+        //have to submit files to use in backend Weldon
+        
+  }
   //chat vars
   const contextinfo = "Martha Steel is a female patient with the patient identifier ABC123. She was born on October 13, 2001. Her contact information is as follows: Address- 123 Sample Street, Sample City, AZ 12345, Contact numbers- Janet Steel (mother) - 555-5555, Susan Steel (sister) - 555-5555. Martha is covered by A1 Insurers Comprehensive Plan, and the contact number for insurance is 555-5555. Her insurance policy number is 12345. Martha has a history of Graves' disease, which was treated with a thyroidectomy in 2021. She currently manages her condition with levothyroxine. Dr. Max Smith is Martha's family doctor. The contact number for Family Doctors is 555-5555, and their address is 26 Sample Terrace. Dr. Ella Lee is an endocrinologist who is involved in Martha's care. The contact number for Dr. Ella Lee is 555-5555, and their address is Sample Specialist Centre, 123 Sample Road. Ms. Lena Yip is an ENT surgeon who performed Martha's thyroidectomy in 2021. The contact number for Ms. Lena Yip is 555-5555. Martha has received vaccinations for Covid-19, including a booster dose. She is currently taking levothyroxine, with a dose of 25mg daily. She has also received the Hepatitis B vaccine (Engerix-B) in May 2020. There are no additional notes or information provided in the report. It is worth noting that Martha has a smoking habit, as mentioned in the report."
   const API_KEY = process.env.REACT_APP_API_KEY;
@@ -115,7 +125,7 @@ function App() {
         onChange={(event) => setUserId(event.target.value)} // Update state variable inline
         placeholder="Enter Patient ID..."
       />
-      
+      <button onClick={submitInfo} >Submit</button>
       <h4 style={{color:'#61dafb'}}>EHR</h4>
       <label className="uploadiconcontainer" for="file-upload">
           <img src={icon} className="uploadicon" alt="Upload File" />

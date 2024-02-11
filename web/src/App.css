@@ -9,6 +9,14 @@
 h4{
   margin-bottom:10px;
 }
+button{
+  border:none;
+  border-radius: 5px;
+  background-color: #1c8bdb40;
+  padding: 10px;
+  margin-left: 10px;
+  color:rgba(224, 224, 224, 0.868);
+}
 .uploadicon{
   width: 100px;
   cursor: pointer;
