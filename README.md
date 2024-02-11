@@ -2,7 +2,7 @@
  
 Every second for a doctor matters. We save time, increase efficiency, and direct the doctor to key areas of focus for patients. We use an innovative measurement technique to maximize patient comfort.
 
-Our app revolutionizes healthcare by streamlining patient record management and pre-visit screening, significantly boosting efficiency and diagnostic precision. Here's how it benefits both doctors and patients:
+Our app revolutionizes healthcare by streamlining patient record management and pre-visit screening, significantly boosting efficiency and diagnostic precision. Here is how it benefits both doctors and patients:
 
 ### For Healthcare Providers:
 - **Time-Saving:** Automates compiling fragmented medical records, saving an average of 16 minutes per patient. This allows doctors to focus more on patient care rather than administrative tasks. It also summarizes radiology reports!
