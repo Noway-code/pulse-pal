@@ -18,7 +18,7 @@ const theme = {
 export default function HomeScreen({ navigation }) {
 	return (
 		<PaperProvider theme={theme}>
-			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: theme.colors.background }}>
+			<View style={{ flex: 1, alignItems: 'center', backgroundColor: theme.colors.background }}>
 				<Title style={{ color: theme.colors.primary }}>Welcome to Our App</Title>
 				<Card style={{ width: '90%', margin: 10 }}>
 					<Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
@@ -28,16 +28,18 @@ export default function HomeScreen({ navigation }) {
 					</Card.Content>
 				</Card>
 				<Divider style={{ width: '90%', margin: 10 }} />
-				<CarouselCards />
-				<Button icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')} buttonColor={theme.colors.primary}>
-					Start Recording
-				</Button>
-				<Button icon="chart-bar" mode="outlined" onPress={() => navigation.navigate('Statistics')} buttonColor={theme.colors.primary} style={{ marginTop: 10 }}>
-					View Statistics
-				</Button>
-				<Text style={{ marginTop: 20, fontSize: 16, color: theme.colors.secondary }} >
-					This is a sample text. You can replace it with any text you want.
-				</Text>
+				<View>
+					<CarouselCards/>
+				</View>
+				{/*<Button icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')} buttonColor={theme.colors.primary}>*/}
+				{/*	Start Recording*/}
+				{/*</Button>*/}
+				{/*<Button icon="chart-bar" mode="outlined" onPress={() => navigation.navigate('Statistics')} buttonColor={theme.colors.primary} style={{ marginTop: 10 }}>*/}
+				{/*	View Statistics*/}
+				{/*</Button>*/}
+				{/*<Text style={{ marginTop: 20, fontSize: 16, color: theme.colors.secondary }} >*/}
+				{/*	This is a sample text. You can replace it with any text you want.*/}
+				{/*</Text>*/}
 			</View>
 		</PaperProvider>
 	);

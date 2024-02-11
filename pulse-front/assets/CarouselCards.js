@@ -9,9 +9,9 @@ const CarouselCards = () => {
 	const isCarousel = React.useRef(null)
 
 	return (
-		<View>
+		<View style={{flex: 1, justifyContent:'flex-end'}}>
 			<Carousel
-				layout="tinder"
+				layout="default"
 				layoutCardOffset={9}
 				ref={isCarousel}
 				data={data}

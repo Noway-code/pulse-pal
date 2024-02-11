@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		borderRadius: 8,
 		width: ITEM_WIDTH,
-		paddingBottom: 40,
+		paddingBottom: 10,
 		shadowColor: "#000",
 		shadowOffset: {
 			width: 0,
@@ -40,10 +40,10 @@ const styles = StyleSheet.create({
 	},
 	header: {
 		color: "#222",
-		fontSize: 28,
+		fontSize: 24,
 		fontWeight: "bold",
 		paddingLeft: 20,
-		paddingTop: 20
+		paddingTop: 10
 	},
 	body: {
 		color: "#222",
