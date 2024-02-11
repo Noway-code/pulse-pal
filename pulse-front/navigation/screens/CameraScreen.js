@@ -14,7 +14,7 @@ export default function CameraScreen({ navigation }) {
 	const [hasCameraPermission, setHasCameraPermission] = useState(null);
 	const [video, setVideo] = useState(null);
 	const [recording, setRecording] = useState(false);
-	const [cameraType, setCameraType] = useState(Camera.Constants.Type.back); // Initially set to back camera
+	const [cameraType, setCameraType] = useState(Camera.Constants.Type.front); // Initially set to front camera
 	const [hr, setHr] = useState(null);
 	const [hrv, setHrv] = useState(null);
 	const cameraRef = useRef(null);
@@ -196,7 +196,7 @@ export default function CameraScreen({ navigation }) {
 					{recording ?
 						<CountdownTimer
 							style={{ height: '10%' }}
-							duration={10}
+							duration={15}
 						/>
 						: <View></View>
 					}
