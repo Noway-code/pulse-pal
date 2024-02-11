@@ -1,7 +1,10 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-
 from json import dump, load
+
+from ehr import parse_document
+
+# from radiology import parse_document
 from yarppg.yarppg.main import get_data
 from yarppg.hrv import get_fps, process_raw_data
 
@@ -14,9 +17,47 @@ def test():
     return "test!!"
 
 
+@app.route("/user-data")
+def user_data():
+    with open("raw_data.json", "r") as f:
+        raw_data = load(f)
+
+    series = raw_data["series"]
+    series = [x[1] for x in series if abs(x[1]) < 1]
+
+    return jsonify({"series": series, "hr": raw_data["hr"]}), 200
+
+
 @app.route("/test-post", methods=["POST"])
 def test_post():
     return "test post"
+
+
+@app.route("/upload-pdf", methods=["POST"])
+def upload_pdf():
+    print(request.get_data())
+    print(f"Request URL: {request.url}")
+    print(request.files)
+
+    # if "pdf" not in request.files:
+    #     print("No pdf file provided")
+    #     return jsonify({"error": "No pdf file provided"}), 400
+
+    pdf_file = request.get_data()
+
+    # if pdf_file.filename == "":
+    #     print("No selected file")
+    #     return jsonify({"error": "No selected file"}), 400
+
+    if pdf_file:
+        # Save the uploaded pdf file to a desired location
+
+        with open("uploaded-pdf.pdf", "wb") as f:
+            f.write(pdf_file)
+
+        result = parse_document()
+
+        return jsonify({"message": result}), 200
 
 
 @app.route("/upload-video", methods=["POST"])
