@@ -75,7 +75,7 @@ def get_data(path: str, fps=30):
     for i in range(len(vs)):
         series.append((ts[i], vs[i]))
 
-    return series
+    return {"series": series, "hr": hr_calc.new_hr}
 
 
 if __name__ == "__main__":

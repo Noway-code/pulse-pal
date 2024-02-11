@@ -32,20 +32,19 @@ def process_raw_data(raw_ppg, fps):
 
     print(type(measures["sdsd"]))
 
-    sdsd = measures["sdsd"]
-
-    if isinstance(sdsd, np.ma.core.MaskedConstant):
-        sdsd = np.nan
-
     ret = {
         "HR": measures["bpm"],
         "SDNN": measures["sdnn"],
         "RMSSD": measures["rmssd"],
-        "SDSD": sdsd,
+        "SDSD": measures["sdsd"],
         "PNN50": measures["pnn50"],
         "SD1": measures["sd1"],
         "SD2": measures["sd2"],
     }
+
+    for key in ret:
+        if isinstance(ret[key], np.ma.core.MaskedConstant) or np.isnan(ret[key]):
+            ret[key] = -1
 
     return ret
 
