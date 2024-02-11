@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, Dimensions, Button, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Button, SafeAreaView, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import { Video } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
@@ -12,6 +12,7 @@ export default function CameraScreen({ navigation }) {
 	const [hasCameraPermission, setHasCameraPermission] = useState(null);
 	const [video, setVideo] = useState(null);
 	const [recording, setRecording] = useState(false);
+	const [cameraType, setCameraType] = useState(Camera.Constants.Type.back); // Initially set to back camera
 	const cameraRef = useRef(null);
 
 	const initializeCamera = async () => {
@@ -40,13 +41,14 @@ export default function CameraScreen({ navigation }) {
 		let options = {
 			quality: "1080p",
 			maxDuration: 60,
-			mute: true
+			mute: true,
 		};
 		try {
 			const recordedVideo = await cameraRef.current.recordAsync(options);
 			if (recordedVideo && recordedVideo.uri) {
 				console.log('Recorded video URI:', recordedVideo.uri);
-				// Now you can use recordedVideo.uri to send the video URI to your Flask backend
+				// Send the recorded video to the Flask backend
+				sendVideoToBackend(recordedVideo.uri);
 			} else {
 				console.error('Failed to record video: recordedVideo or recordedVideo.uri is undefined');
 			}
@@ -57,7 +59,6 @@ export default function CameraScreen({ navigation }) {
 		}
 	};
 
-
 	let stopRecording = async () => {
 		if (recording) {
 			setRecording(false);
@@ -67,6 +68,46 @@ export default function CameraScreen({ navigation }) {
 				console.error('Failed to stop recording:', error);
 			}
 		}
+	};
+
+	const sendVideoToBackend = async (videoUri) => {
+		try {
+			const videoFile = await FileSystem.readAsStringAsync(videoUri, { encoding: FileSystem.EncodingType.Base64 });
+			const formData = new FormData();
+			formData.append('video', {
+				uri: videoUri,
+				type: 'video/mp4',
+				name: 'recorded-video.mp4',
+			});
+
+			const requestOptions = {
+				method: 'POST',
+				body: formData,
+				redirect: 'follow',
+			};
+
+			const response = await fetch('http://100.66.10.237:5000/upload-video', requestOptions);
+
+			if (response.ok) {
+				console.log('Video uploaded successfully');
+			} else {
+				console.error('Failed to upload video:', response.status);
+			}
+		} catch (error) {
+			console.error('Error uploading video:', error);
+		}
+	};
+
+	const flipCamera = () => {
+		setCameraType(
+			cameraType === Camera.Constants.Type.back
+				? Camera.Constants.Type.front
+				: Camera.Constants.Type.back
+		);
+	};
+
+	const handleDoubleTap = () => {
+		flipCamera();
 	};
 
 	if (video) {
@@ -85,15 +126,19 @@ export default function CameraScreen({ navigation }) {
 	}
 	return (
 		<View style={styles.container}>
-			<Text></Text>
-			<Camera
-				style={styles.camera}
-				ref={cameraRef}
-			>
-				<View style={styles.buttonContainer}>
-					<Button title={recording ? "Stop Recording" : "Record Video"} onPress={recording ? stopRecording : recordVideo} />
-				</View>
-			</Camera>
+			<TouchableOpacity activeOpacity={1} onPress={handleDoubleTap} onDoublePress={handleDoubleTap} style={styles.cameraContainer}>
+				<Camera
+					style={styles.camera}
+					type={cameraType}
+					ref={cameraRef}
+					autoFocus={Camera.Constants.AutoFocus.on}
+				>
+					<View style={styles.overlay} />
+					<View style={styles.buttonContainer}>
+						<Button title={recording ? "Stop Recording" : "Record Video"} onPress={recording ? stopRecording : recordVideo} />
+					</View>
+				</Camera>
+			</TouchableOpacity>
 			<View>
 				{(hasCameraPermission) ? (<Text>Camera permission on</Text>) : (<Text>Camera permission off</Text>)}
 			</View>
@@ -109,13 +154,31 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
+	cameraContainer: {
+		flex: 1,
+		width: '90%',
+		height: '90%',
+		borderRadius: 20,
+		overflow: 'hidden',
+	},
 	camera: {
-		width: Dimensions.get('window').width / 1.5,
-		height: Dimensions.get('window').height / 1.5,
+		flex: 1,
 		borderRadius: 20,
 	},
 	buttonContainer: {
 		backgroundColor: "#fff",
 		alignSelf: "flex-end",
+		flexDirection: 'row', // Added to align buttons horizontally
+		justifyContent: 'space-between', // Added to distribute space evenly between buttons
+	},
+	overlay: {
+		position: 'absolute',
+		top: '35%', // Adjust position to center
+		left: '25%', // Adjust position to center
+		width: '50%', // Adjust size as needed
+		height: '40%', // Adjust size as needed
+		borderWidth: 2,
+		borderColor: 'red',
+		backgroundColor: 'transparent',
 	}
 });
