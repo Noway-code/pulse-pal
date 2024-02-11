@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {FlatList, Text, Image, View, SafeAreaView, Dimensions, StyleSheet, ImageBackground} from 'react-native';
 import {Button, Provider as PaperProvider, DefaultTheme, Card, Title, Paragraph, Divider} from 'react-native-paper';
-import CarouselCards from "../../assets/CarouselCards";
 import { useFonts, Roboto_500Medium, Roboto_700Bold, Roboto_100Thin, Roboto_300Light} from '@expo-google-fonts/roboto';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SvgUri } from 'react-native-svg';

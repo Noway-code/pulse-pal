@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, Dimensions, Button, SafeAreaView, TouchableOpacity, Pressable, Image } from 'react-native';
+import {StyleSheet, Text, View, Dimensions, Button, SafeAreaView, TouchableOpacity, Pressable, Image, ActivityIndicator, Alert} from 'react-native';
 import { Camera } from 'expo-camera';
 import { Video } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import { useFocusEffect } from '@react-navigation/native';
 import CountdownTimer from './components/CountdownTimer';
-import client from '../../api/client';
 
 export default function CameraScreen({ navigation }) {
 	const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -18,6 +17,7 @@ export default function CameraScreen({ navigation }) {
 	const [hr, setHr] = useState(null);
 	const [hrv, setHrv] = useState(null);
 	const cameraRef = useRef(null);
+	const [visible, setVisible] = React.useState(false);
 
 	const initializeCamera = () => {
 		Camera.requestCameraPermissionsAsync().then((cameraStatus) => {
@@ -137,6 +137,8 @@ export default function CameraScreen({ navigation }) {
 				console.log("body")
 				console.log(data);
 				setHrv(data);
+				Alert.alert("HRV Data", JSON.stringify(data));
+				console.log(hrv)
 			})
 			.catch(error => {
 				console.log('Error processing video:', error)
@@ -185,6 +187,7 @@ export default function CameraScreen({ navigation }) {
 		);
 	}
 	return (
+
 		<View style={styles.container}>
 			<TouchableOpacity activeOpacity={1} onPress={handleDoubleTap} onDoublePress={handleDoubleTap} style={styles.cameraContainer}>
 				<Camera
