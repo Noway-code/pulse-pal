@@ -1,0 +1,102 @@
+.userIdInput{
+  background-color:#1d1f25;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  outline-width:0;
+  color: white;
+}
+.uploadicon{
+  width: 100px;
+  cursor: pointer;
+  margin: 0 auto;
+}
+
+.uploadiconcontainer{
+  background-color: #1c8bdb40;
+  width: 300px;
+  height: 200px;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 25px;
+  margin-top: 50px;
+  border: 3px dashed #1C8ADB;
+}
+::-webkit-scrollbar {
+  width: 20px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+  border-radius: 20px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+.summarycontainer{
+  height: 70vh;
+  width: 25vw;
+  background-color: #1c8bdb40;
+  padding: 10px;
+  overflow-y: scroll;
+  border-radius: 15px;
+}
+.summarycontainer{
+  font-size: 14px;
+  text-align: left;
+}
+.chatboxcontainer{
+  width: 25vw;
+  background-color:#282c34;
+}
+.chatbox{
+  background-color: #282c34;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
