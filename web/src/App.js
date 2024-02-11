@@ -16,16 +16,12 @@ function App() {
 
   const addFiles = (files) => {
     setFile(files);
-    console.log("bro");
-    console.log(files);
-    console.log("bro");
+    // processing for EHC
   }
 
   const addFilesRad = (files) => {
     setFileRad(files);
-    console.log("bro");
-    console.log(files);
-    console.log("bro");
+    // processing for Rad
   }
 
   //chat vars
@@ -145,11 +141,14 @@ function App() {
         ></input>
 
       </div>
-      <div >
+      {summary ? (
+        <div style={{display:'flex', flexDirection:'row', justifyContent:'space-around', width: '60%'}}>
+      <div>
         <h2>Record Summary</h2>
         <p className="summarycontainer">{summary}</p>
       </div>
       <div className="chatboxcontainer">
+        <h2>AI Helper</h2>
         <MainContainer style={{border:"none", borderRadius: "15px", backgroundColor:"#1f2126", height: "70vh"}}>
           <ChatContainer style={{border:"none", backgroundColor:"#1f2126"}}>
             <MessageList style={{backgroundColor:"#1f2126", border:"none"}}
@@ -163,6 +162,9 @@ function App() {
           </ChatContainer>
         </MainContainer>
       </div>
+      </div>
+      ) : (<div></div>)
+      }
       </header>
 
     </div>

@@ -76,6 +76,7 @@ h4{
 .chatboxcontainer{
   width: 25vw;
   background-color:#282c34;
+  margin: 20px;
 }
 .chatbox{
   background-color: #282c34;

@@ -151,7 +151,7 @@ export default function CameraScreen({ navigation }) {
 					</View>
 				</Camera>
 			</TouchableOpacity>
-			<View>
+			<View style={{position:'absolute', zIndex:-1}}>
 				{(hasCameraPermission) ? (<Text>Camera permission on</Text>) : (<Text>Camera permission off</Text>)}
 			</View>
 			<StatusBar style="auto" />
@@ -168,14 +168,12 @@ const styles = StyleSheet.create({
 	},
 	cameraContainer: {
 		flex: 1,
-		width: '90%',
-		height: '90%',
-		borderRadius: 20,
+		width: '100%',
+		height: '100%',
 		overflow: 'hidden',
 	},
 	camera: {
 		flex: 1,
-		borderRadius: 20,
 	},
 	buttonContainer: {
 		height: '95%',
