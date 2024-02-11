@@ -7,7 +7,11 @@ import { Video } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import { useFocusEffect } from '@react-navigation/native';
+<<<<<<< Updated upstream
 import CountdownTimer from './components/CountdownTimer';
+=======
+import client from '../../api/client';
+>>>>>>> Stashed changes
 
 export default function CameraScreen({ navigation }) {
 	const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -85,15 +89,41 @@ export default function CameraScreen({ navigation }) {
 				method: 'POST',
 				body: formData,
 				redirect: 'follow',
+				setTimeout
 			};
 
-			const response = await fetch('http://100.66.10.237:5000/upload-video', requestOptions);
+			console.log("TESTING")
 
-			if (response.ok) {
-				console.log('Video uploaded successfully');
-			} else {
-				console.error('Failed to upload video:', response.status);
-			}
+			fetch('http://100.66.9.141:5000/upload-video', requestOptions)
+				.then(resp => {
+					console.log('Response:', resp)
+
+					if (resp.status === 200) {
+						console.log('Video uploaded successfully');
+						return resp.json();
+					}
+				})
+				.then(data => {
+					console.log('Data:', data);
+				})
+				.catch(error => {
+					console.log('Error uploading video:', error)
+				})
+
+			// const response = await fetch('http://100.66.9.141:5000/upload-video', requestOptions);
+
+			// console.log('Response:', response)
+			// if (response.status === 200) {
+			// 	console.log('Video uploaded successfully');
+			// 	console.log(response.body)
+			// 	response.json().then(resp => {
+			// 		console.log("body")
+			// 		console.log(resp);
+			// 	})
+			// }
+			// else {
+			// 	console.error('Failed to upload video:', response.status);
+			// }
 		} catch (error) {
 			console.error('Error uploading video:', error);
 		}

@@ -88,3 +88,4 @@ class HRCalculator(QObject):
             if self.filt_fun is not None and callable(self.filt_fun):
                 vs = self.filt_fun(vs)
             self.new_hr = self.hr_fun(vs, ts)
+            print(f"update: {self.new_hr}")

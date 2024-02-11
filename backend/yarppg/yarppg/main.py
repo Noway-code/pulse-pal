@@ -25,9 +25,11 @@ from yarppg.yarppg.ui.cli import (
 
 
 def get_data(path: str, fps=30):
+    print("Getting data")
     parser = get_mainparser()
     args = parser.parse_args([])
     app = QApplication(sys.argv)
+    print(app)
 
     roi_detector = get_detector(args)
 
