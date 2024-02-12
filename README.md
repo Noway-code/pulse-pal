@@ -19,6 +19,7 @@ Our app revolutionizes healthcare by streamlining patient record management and 
 - **Improved Care:** Enhances the quality of doctor-patient interactions by ensuring consultations are informed and focused on care.'
 
 ### Awards:
-- **Hacklytics 2024:**: Elevance Health Care Challenge - 3rd Place
+- **Hacklytics 2024:** Elevance Health Care Challenge - 3rd Place
+
 
 This digital health solution not only makes healthcare more efficient and safer but also promotes proactive health management, leading to better outcomes for patients.
