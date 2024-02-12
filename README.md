@@ -16,6 +16,9 @@ Our app revolutionizes healthcare by streamlining patient record management and 
 ### Impact:
 - **Efficiency:** Reduces administrative workload for healthcare providers, allowing more time for patient care.
 - **Early Detection:** Facilitates early detection of diseases, with heart rate variability being a key predictor for cardiovascular conditions.
-- **Improved Care:** Enhances the quality of doctor-patient interactions by ensuring consultations are informed and focused on care.
+- **Improved Care:** Enhances the quality of doctor-patient interactions by ensuring consultations are informed and focused on care.'
+
+### Awards:
+- **Hacklytics 2024:**: Elevance Health Care Challenge - 3rd Place
 
 This digital health solution not only makes healthcare more efficient and safer but also promotes proactive health management, leading to better outcomes for patients.
